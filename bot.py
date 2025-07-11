@@ -1,27 +1,38 @@
+import os
 from telegram import Update
-from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 from revChatGPT.V1 import Chatbot
 
-TELEGRAM_TOKEN = "7648869904:AAE38kPxaH32oNZTxvpHtCR1m1CyUTEWddw"
-
-chatbot = Chatbot({
-    "email": "aniesmas591@gmail.com",
-    "password": "Lala011199*#"
+# Inisialisasi chatbot dengan email & password dari environment variable
+chatbot = Chatbot(config={
+    "email": os.getenv("GPT_EMAIL"),
+    "password": os.getenv("GPT_PASSWORD")
 })
 
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+
+# Command /start
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Halo! Kirim pesan apa saja dan aku akan membalas dengan ChatGPT (versi gratis) 🤖")
+
+# Menangani pesan teks biasa
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_message = update.message.text
-    chat_id = update.effective_chat.id
-
     try:
+        user_input = update.message.text
         response = ""
-        for data in chatbot.ask(user_message):
+        for data in chatbot.ask(user_input):
             response += data["message"]
-        await context.bot.send_message(chat_id=chat_id, text=response)
-    except Exception as e:
-        await context.bot.send_message(chat_id=chat_id, text=f"⚠️ Error: {str(e)}")
 
-if __name__ == '__main__':
-    app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
+        await update.message.reply_text(response.strip())
+
+    except Exception as e:
+        await update.message.reply_text(f"⚠️ Terjadi error: {e}")
+
+# Menjalankan bot
+if __name__ == "__main__":
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
+
+    app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+
     app.run_polling()
