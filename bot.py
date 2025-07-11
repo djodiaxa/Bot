@@ -1,22 +1,20 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
-from g4f.client import Client
-from g4f.Provider import FreeGpt  # Provider gratis yang tidak pakai cookies
+import g4f
+import os
 
-BOT_TOKEN = "7648869904:AAE38kPxaH32oNZTxvpHtCR1m1CyUTEWddw"
-
-client = Client(provider=FreeGpt, enable_browser=False)
+BOT_TOKEN = os.getenv("BOT_TOKEN") or "7648869904:AAE38kPxaH32oNZTxvpHtCR1m1CyUTEWddw"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Halo! Kirim pesan apa saja dan aku akan membalas dengan ChatGPT (versi gratis) 🤖")
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",  # gpt-4o sering error di provider gratis
+        response = g4f.ChatCompletion.create(
+            model="gpt-3.5-turbo",  # model yang stabil
             messages=[{"role": "user", "content": update.message.text}],
         )
-        await update.message.reply_text(response.choices[0].message.content.strip())
+        await update.message.reply_text(response)
     except Exception as e:
         await update.message.reply_text(f"⚠️ Terjadi error: {e}")
 
