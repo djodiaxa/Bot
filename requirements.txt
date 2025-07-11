@@ -1,2 +1,2 @@
 python-telegram-bot==20.6
-revChatGPT==1.2.3
+revChatGPT @ git+https://github.com/acheong08/ChatGPT.git@v1.2.3
