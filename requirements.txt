@@ -1,2 +1,2 @@
 python-telegram-bot==20.3
-g4f @ git+https://github.com/xtekky/g4f.git
+g4f @ https://github.com/xtekky/g4f/archive/refs/heads/main.zip
