@@ -1,21 +1,14 @@
-import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
 from revChatGPT.V1 import Chatbot
 
-# Token Telegram (normal, bukan ChatGPT token)
 TELEGRAM_TOKEN = "7648869904:AAE38kPxaH32oNZTxvpHtCR1m1CyUTEWddw"
 
-# ChatGPT Web (akses gratis, tidak butuh API key)
-chatbot = Chatbot(config={
+chatbot = Chatbot({
     "email": "aniesmas591@gmail.com",
     "password": "Lala011199*#"
 })
 
-# Logging
-logging.basicConfig(level=logging.INFO)
-
-# Handler pesan
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_message = update.message.text
     chat_id = update.effective_chat.id
@@ -28,9 +21,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         await context.bot.send_message(chat_id=chat_id, text=f"⚠️ Error: {str(e)}")
 
-# Jalankan bot
 if __name__ == '__main__':
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-    print("Bot is running...")
     app.run_polling()
