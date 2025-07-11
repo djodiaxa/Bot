@@ -1,22 +1,25 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
-import g4f
+from g4f.client import Client
+from g4f.Provider import You  # Provider bisa diganti kalau error
 
 BOT_TOKEN = "7648869904:AAE38kPxaH32oNZTxvpHtCR1m1CyUTEWddw"
+
+# Buat client g4f dengan browser/cookies dimatikan
+client = Client(provider=You, enable_browser=False)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Halo! Kirim pesan apa saja dan aku akan membalas dengan ChatGPT (versi gratis) 🤖")
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
-        response = g4f.ChatCompletion.create(
-            model="gpt-4o",  # bebas ganti model dari daftar yang tersedia
-            provider=g4f.Provider.You,
+        response = client.chat.completions.create(
+            model="gpt-4o",  # Bisa diganti ke gpt-3.5-turbo atau gpt-4
             messages=[{"role": "user", "content": update.message.text}],
         )
-        await update.message.reply_text(response)
+        await update.message.reply_text(response.choices[0].message.content.strip())
     except Exception as e:
-        await update.message.reply_text(f"Terjadi error: {e}")
+        await update.message.reply_text(f"⚠️ Terjadi error: {e}")
 
 if __name__ == "__main__":
     app = ApplicationBuilder().token(BOT_TOKEN).build()
