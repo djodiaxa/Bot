@@ -2,7 +2,7 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 import g4f
 
-BOT_TOKEN = "ISI_TOKEN_BOT_KAMU_DI_SINI"
+BOT_TOKEN = "7648869904:AAE38kPxaH32oNZTxvpHtCR1m1CyUTEWddw"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Halo! Kirim pesan apa saja dan aku akan membalas dengan ChatGPT (versi gratis) 🤖")
