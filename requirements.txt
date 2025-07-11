@@ -1,4 +1,2 @@
-python-telegram-bot==20.6
-g4f
-nodriver
-platformdirs
+python-telegram-bot==20.3
+g4f @ git+https://github.com/xtekky/g4f.git
