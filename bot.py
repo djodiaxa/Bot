@@ -3,17 +3,18 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 import os
 
+# Ambil dari environment variable
 config = {
     "email": os.getenv("GPT_EMAIL"),
     "password": os.getenv("GPT_PASSWORD")
 }
 
-chatbot = Chatbot(config, conversation_id=None)
+chatbot = Chatbot(config)
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Halo! Kirim pesan apa saja dan aku akan jawab pakai ChatGPT (versi gratis) 🤖")
+    await update.message.reply_text("Halo! Kirim pesan apa saja dan aku akan jawab pakai ChatGPT gratis 🤖")
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
