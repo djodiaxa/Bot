@@ -1,26 +1,36 @@
+import logging
 from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
-from g4f.Provider import You
-import g4f
+from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
+from revChatGPT.V1 import Chatbot
 
-BOT_TOKEN = "7648869904:AAE38kPxaH32oNZTxvpHtCR1m1CyUTEWddw"  # Ganti kalau perlu
+# Token Telegram (normal, bukan ChatGPT token)
+TELEGRAM_TOKEN = "7648869904:AAE38kPxaH32oNZTxvpHtCR1m1CyUTEWddw"
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Halo! Kirim pesan apa saja dan aku akan membalas dengan ChatGPT (versi gratis) 🤖")
+# ChatGPT Web (akses gratis, tidak butuh API key)
+chatbot = Chatbot(config={
+    "email": "aniesmas591@gmail.com",
+    "password": "Lala011199*#"
+})
 
+# Logging
+logging.basicConfig(level=logging.INFO)
+
+# Handler pesan
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    try:
-        response = g4f.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            provider=You,
-            messages=[{"role": "user", "content": update.message.text}],
-        )
-        await update.message.reply_text(response)
-    except Exception as e:
-        await update.message.reply_text(f"⚠️ Terjadi error: {e}")
+    user_message = update.message.text
+    chat_id = update.effective_chat.id
 
-if __name__ == "__main__":
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
-    app.add_handler(CommandHandler("start", start))
+    try:
+        response = ""
+        for data in chatbot.ask(user_message):
+            response += data["message"]
+        await context.bot.send_message(chat_id=chat_id, text=response)
+    except Exception as e:
+        await context.bot.send_message(chat_id=chat_id, text=f"⚠️ Error: {str(e)}")
+
+# Jalankan bot
+if __name__ == '__main__':
+    app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+    print("Bot is running...")
     app.run_polling()
