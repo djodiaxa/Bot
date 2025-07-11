@@ -1,4 +1,2 @@
 python-telegram-bot==20.3
-nodriver
-platformdirs
-git+https://github.com/xtekky/g4f.git
+revChatGPT==0.0.45
