@@ -1,12 +1,11 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 from g4f.client import Client
-from g4f.Provider import You  # Provider bisa diganti kalau error
+from g4f.Provider import FreeGpt  # Provider gratis yang tidak pakai cookies
 
 BOT_TOKEN = "7648869904:AAE38kPxaH32oNZTxvpHtCR1m1CyUTEWddw"
 
-# Buat client g4f dengan browser/cookies dimatikan
-client = Client(provider=You, enable_browser=False)
+client = Client(provider=FreeGpt, enable_browser=False)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Halo! Kirim pesan apa saja dan aku akan membalas dengan ChatGPT (versi gratis) 🤖")
@@ -14,7 +13,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         response = client.chat.completions.create(
-            model="gpt-4o",  # Bisa diganti ke gpt-3.5-turbo atau gpt-4
+            model="gpt-3.5-turbo",  # gpt-4o sering error di provider gratis
             messages=[{"role": "user", "content": update.message.text}],
         )
         await update.message.reply_text(response.choices[0].message.content.strip())
