@@ -1,17 +1,17 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 import g4f
-import os
 
-BOT_TOKEN = os.getenv("BOT_TOKEN") or "7648869904:AAE38kPxaH32oNZTxvpHtCR1m1CyUTEWddw"
+BOT_TOKEN = "7648869904:AAE38kPxaH32oNZTxvpHtCR1m1CyUTEWddw"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Halo! Kirim pesan apa saja dan aku akan membalas dengan ChatGPT (versi gratis) 🤖")
+    await update.message.reply_text("Halo! Kirim pesan apa saja dan aku akan membalas dengan ChatGPT (gratis) 🤖")
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         response = g4f.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # model yang stabil
+            model="gpt-3.5-turbo",  # pakai model gratis dan stabil
+            provider=g4f.Provider.FreeChat,  # provider stabil tanpa perlu cookie
             messages=[{"role": "user", "content": update.message.text}],
         )
         await update.message.reply_text(response)
